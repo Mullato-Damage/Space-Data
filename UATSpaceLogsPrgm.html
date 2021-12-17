@@ -1,0 +1,220 @@
+<!--Terione Martin-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--Here's script link for the program-->
+    <script src="UATSpaceLogsScript.js" ></script>
+    <!--here's my stylesheet link-->
+    <link href="UATSpaceLogsStyle.css" rel="stylesheet" type="text/css" />
+    <!--This is the data that will appear on the page and change as time goes on-->
+    <script src="dataLoader.js"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UAT Space Program Logs</title>
+</head>
+<body>
+    <!--This table holds my picture and Header.-->
+    <!--table creates a box that will display items, that can then be displayed by rows and columns -->
+    <table class="table1">
+        <tr>
+            <td>
+                <h1>
+                    <!--This is my picture that is being searched in my programs folder.-->
+                    <img src="UATspaceLogo-2.jpg"/> 
+                    <!--This is my Header, which can be scene at the top of my page.-->
+                    Space Logs
+                </h1>
+            </td>
+        </tr>
+    </table>
+    <!--This table is very important because it displays all of the data, once the start button has been activated.-->
+    <table id="data" border="2" width="85%" class="table2">
+        <!--col are the columns that are placed in when the table isn't active, which now has a specified size.-->
+        <col style="width: 20%;">
+        <col style="width: 20%;">
+        <thead>
+            <!--These are the headers that make up the two columns that the data will correspond too -->
+            <tr style="font-family: 'Times New Roman', Times, serif;">
+                <th align="left">Data Type</th>
+                <th align="left">Readings</th>
+            </tr>
+        </thead>
+        <!-- Before these id's are displayed, after start is pressed, this portion of the table be blank until the data is shown.
+            These are the id's to my categories that will be displayed once the start button is active. 
+            The id's make sure that each category is in the correct spot, so data doesn't overlap or get misplaced.-->
+        <tbody style="font-weight: bolder;">
+            <tr id="seconds"></tr>
+            <tr id=latitude></tr>
+            <tr id=longitude></tr>
+            <tr id=gps_altitude></tr>
+            <tr id=bmpSensor_altitude></tr>
+            <tr id=bmpSensor_pressure></tr>
+            <tr id=bmpSensor_temp></tr>
+            <tr id=digSensor_temp></tr>
+            <tr id=cssSensor_temp></tr>
+            <tr id=cssSensor_eCO2></tr>
+            <tr id=cssSensor_TVOC></tr>
+            <tr id=UV></tr>
+            <tr id=AccelX></tr>
+            <tr id=AccelY></tr>
+            <tr id=AccelZ></tr>
+            <tr id=MagneticX></tr>
+            <tr id=MagneticY></tr>
+            <tr id=MagneticZ></tr>
+            <tr id=GyroX></tr>
+            <tr id=GyroY></tr>
+            <tr id=GyroZ></tr>
+        </tbody>
+
+    </table>
+    <!--This is the table that will display my time-->
+    <table class="table3">
+        <!--thead creates rows in a column for data to be display in-->
+        <thead>
+            <!--tr is the code that creates a row in a table-->
+            <tr>
+                <!--tr creates a column in a table.-->
+                <!--This is what the table will say whenever the start by=utton isn't activated and the tables aren't being updated.-->
+                <th>The time is :</th>
+            </tr>
+        </thead>
+        <!--This is my smaller table which will display my timer once the start button has been activated.
+        Once is active, it will replace the thead with the tie function that was created in javascript. -->
+        <tbody align="center">
+            <tr id="time">
+                
+            </tr>
+        </tbody>
+    </table>
+    <p>
+        <!--These are my start and stop button. They are placed as inputs because they have to be linked so they can be enabled and disabled by each other.
+        Their function is found in the javascript file.-->
+        <INPUT id="Starter" type="button" value="Start" onclick="Start();" class="YingYang" />
+        <!--Disabled is put as true, so that the stop button can't be pressed until the start button is active.-->
+        <INPUT id="Stopper" type="button" value="Stop" onclick="Stop();" disabled=true class="YingYang" />
+    </p>
+    <br>
+    <!--These are my 4 audio buttons that are connected to their corresponding functions in the javascript.-->
+    <!--This plays Human Innovation, when pressed.-->
+    <button class="BoomingButtons" onclick="PlayHumanInnovation();"> Play Human Innovation </button>
+    <!--This plays Rocket Engine Ignition Rumble, when pressed.-->
+    <button class="BoomingButtons" onclick="PlayRocketEngine();"> Play Rocket Engine </button>
+    <br>
+    <br>
+    <!--This plays Space Shuttle Rocket Ignition, when pressed.-->
+    <button class="BoomingButtons" onclick="PlayRocketIgnition();"> Play Rocket Ignition </button>
+    <!--This plays Space Epic, when pressed.-->
+    <button class="BoomingButtons" onclick="PlaySpaceEpic();"> Play Space Epic </button>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+</body>
+<script>
+    // Global variables
+    // This is the variable that is applied when providing the current time on the clock at the bottom of my program.
+    var theTime = new Date();
+    var tempTime = new Date();
+    // This time interval tells the data table to update every 5 seconds, since 5000 miliseconds equals 5 seconds.
+    var time_interval = 5000;
+    // This tells the table that it needs to start it's timer at 0 and count up.
+    var last_iteration = 0;
+    // This variable tells the program that anything that has the "running" code in it, that the command is true, allowing it to play.
+    var running = true;
+    // This tells the timer, for the data table, to start at 0 and count up.
+    var index = 0;
+    // This variable makes sure that the table runs on a timer.
+    var timer;
+
+    // This variable tells the program that data equals getdata or that it's the same thing.
+    // This allows for smaller portions of code and gives me the chance to create the function with the correct properties, without having to include "()" in the code, which could bring up th e wrong function.
+    // The getData function can be found in the javascript file.
+    var data = getData();
+
+    /***************************************************************************************
+     * Functions
+     ****************************************************************************************/
+    // This makes sure that the table is updated based on the timer.
+    // This is connected to our data, and tells the program that the tables display is running on a time limit.
+    // This function is connected to the start button and makes sure the timer is started once the button is pressed and that the table is updated every 5 seconds.
+     function updateDisplay() {
+         // This code links the variable above to my timer, allowing for new digits to appear in the timer every 5 seconds..
+        theTime = new Date();
+        // This outputs a message to the debugging console.
+        console.log(
+            "Display : " +
+            // This will add the hours, minutes, and seconds together; Which allows for each piece to act as a gear and move the other as it moves, allowing for an accurate time.
+            (theTime.getHours() < 10 ? "0" + theTime.getHours() : theTime.getHours()) +
+            ":" + (theTime.getMinutes() < 10 ? "0" + theTime.getMinutes() : theTime.getMinutes()) +
+            ":" + (theTime.getSeconds() < 10 ? "0" + theTime.getSeconds() : theTime.getSeconds())
+        );
+
+        // This variable tells the program that timeRead is the same thing as data[index].
+        var timeRead = data[index].time_seconds;
+        // This tells the program that when the table hits 10 or is greater, then the data and categories will be displayed.
+        if (timeRead >= 10) {
+            // The data id connects the categories to the data table in the dataloader file.
+            // In the brackets after "rows" is the name of the category.
+            // The first part, in the parentheses of the dataRow, is the legend of name of the category that will be displayed on the left of the table.
+            // The second part, in the parentheses of dataRow, is the value, which will be shown as data index, which tells the program whcih value to extract from the dataloader file.
+            // Finally, the third piece of the parentheses of dataRow, is the unit, which may just be "" or be something like "seconds", for example.
+            // These are the codes that make up each row and column of the data table.
+            document.getElementById("data").rows["seconds"].innerHTML = dataRow("Time elapsed", data[index]
+                .time_seconds, "seconds");
+            document.getElementById("data").rows["latitude"].innerHTML = dataRow("Latitude", data[index].latitude, " ");
+            document.getElementById("data").rows["longitude"].innerHTML = dataRow("Longltude", data[index].longitude,
+                " ");
+            document.getElementById("data").rows["gps_altitude"].innerHTML = dataRow("GPS Altitude", data[index]
+                .gps_altitude, " ");
+            document.getElementById("data").rows["bmpSensor_altitude"].innerHTML = dataRow("BMP Sensor Altitude", data[
+                index].bmpSensor_altitude, "");
+            document.getElementById("data").rows["bmpSensor_pressure"].innerHTML = dataRow("BMP Sensor Pressure", data[
+                index].bmpSensor_pressure, "");
+            document.getElementById("data").rows["bmpSensor_temp"].innerHTML = dataRow("BMP Sensor Temperature", data[
+                index].bmpSensor_temp, "");
+            document.getElementById("data").rows["digSensor_temp"].innerHTML = dataRow("Digital Sensor Temperature",
+                data[index].digSensor_temp, "");
+            document.getElementById("data").rows["cssSensor_temp"].innerHTML = dataRow("CSS Sensor Temperature", data[
+                index].cssSensor_temp, "");
+            document.getElementById("data").rows["cssSensor_eCO2"].innerHTML = dataRow("CSS Sensor eCO2", data[index]
+                .cssSensor_eCO2, "");
+            document.getElementById("data").rows["cssSensor_TVOC"].innerHTML = dataRow("CSS Sensor TVOC", data[index]
+                .cssSensor_TVOC, "");
+            document.getElementById("data").rows["UV"].innerHTML = dataRow("UV", data[index].UV, " ");
+            document.getElementById("data").rows["AccelX"].innerHTML = dataRow("Accel X", data[index].AccelX, " ");
+            document.getElementById("data").rows["AccelY"].innerHTML = dataRow("Accel Y", data[index].AccelY, " ");
+            document.getElementById("data").rows["AccelZ"].innerHTML = dataRow("Accel Z", data[index].AccelZ, " ");
+            document.getElementById("data").rows["MagneticX"].innerHTML = dataRow("Magnetic X", data[index].MagneticX,
+                " ");
+            document.getElementById("data").rows["MagneticY"].innerHTML = dataRow("Magnetic Y", data[index].MagneticY,
+                " ");
+            document.getElementById("data").rows["MagneticZ"].innerHTML = dataRow("Magnetic Z", data[index].MagneticZ,
+                " ");
+            document.getElementById("data").rows["GyroX"].innerHTML = dataRow("Gyro X", data[index].GyroX, " ");
+            document.getElementById("data").rows["GyroY"].innerHTML = dataRow("Gyro Y", data[index].GyroY, " ");
+            document.getElementById("data").rows["GyroZ"].innerHTML = dataRow("Gyro Z", data[index].GyroZ, " ");
+            // This "if" tells the program that as long as the timer is under 499, it should keep adding to the timer.
+            if (index < 499) {
+                index++;
+                // The "else" tells the program that when it reaches/surpasses 499, it will start the timer back at 0.
+            } else {
+                index = 0;
+            }
+        }
+        
+        // This is the function that creates my timer that appears in table3, which will be displaying the time, at the bottom of the page.
+        document.getElementById("time").innerHTML =
+        // This is will display the current time, in military time.
+        // This will add the hours, minutes, and seconds together; Which allows for each piece to act as a gear and move the other as it moves, allowing for an accurate time.
+            (theTime.getHours() < 10 ? "0" + theTime.getHours() : theTime.getHours()) +
+            ":" + (theTime.getMinutes() < 10 ? "0" + theTime.getMinutes() : theTime.getMinutes()) +
+            ":" + (theTime.getSeconds() < 10 ? "0" + theTime.getSeconds() : theTime.getSeconds());
+
+
+    }
+</script>
+</html>

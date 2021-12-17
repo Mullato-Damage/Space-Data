@@ -1,0 +1,27 @@
+body {
+    background-color: silver;
+    background-image: linear-gradient(0deg, blue, black);
+}
+.YingYang {
+    width: 150px;
+    height: 30px;
+    background-color:darkred;
+    border-radius: 12px;
+    border-color: darkblue;
+}
+.BoomingButtons {
+    background-color:purple;
+    border-color: maroon;
+    width: 200px;
+    height: 30px;
+}
+.table1 {
+    background-image: linear-gradient(180deg, blue, silver);
+}
+.table2 {
+    background-color: blue;
+    background-image: linear-gradient(0deg, darkred, silver);
+}
+.table3 {
+    background-color: darkgreen;
+}
